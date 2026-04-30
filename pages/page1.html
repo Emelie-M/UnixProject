@@ -4,54 +4,52 @@
   <meta charset="UTF-8">
   <title>Music App</title>
   <link rel="stylesheet" href="../css/Style.css">
-  <script src = "../script/javascript.js"></script>
+
 </head>
 <body>
 
 <div class="container">
 
-  <!-- Sidebar -->
+  <!-- SIDEBAR -->
   <aside class="sidebar">
     <h2>Playlist</h2>
     <ul id="playlist"></ul>
-
-    <input id="songInput" placeholder="Add song URL">
-    <button id="add">Add</button>
   </aside>
 
-  <!-- Main Content -->
+  <!-- MAIN -->
   <main class="main">
 
-    <!-- Hero -->
+      <!-- VINYL -->
+      <div class="vinyl-wrapper">
+        <div class="vinyl" id="vinyl">
+          <img src="../images/vinyl.svg" class="vinyl-img">
+          <div class="vinyl-label"></div>
+        </div>
+      </div>
+
+    <!-- HERO -->
     <div class="hero">
+
+      <!-- TEXT -->
       <div class="hero-text">
         <h1 id="title">No song selected</h1>
-        <p>Play your favorite tracks</p>
+        <p id="artist">Select a track</p>
+
         <button id="playHero">PLAY</button>
+
+        <div id="trackList" class="track-list"></div>
       </div>
+
     </div>
 
-    <!-- Albums -->
-    <h2>Popular Albums</h2>
-    <div class="row">
-      <div class="card"></div>
-      <div class="card"></div>
-      <div class="card"></div>
-      <div class="card"></div>
-    </div>
-
-    <!-- Artists -->
-    <h2>Popular Artists</h2>
-    <div class="row">
-      <div class="artist"></div>
-      <div class="artist"></div>
-      <div class="artist"></div>
-      <div class="artist"></div>
-    </div>
+    <!-- SONG GRID -->
+    <h2>All Songs</h2>
+    <div id="songList" class="row"></div>
 
   </main>
 </div>
 
+<!-- PLAYER -->
 <div class="player">
 
   <div class="track-info">
@@ -72,8 +70,6 @@
 
   <audio id="audio"></audio>
 
-</div>
-
-<script src="script.js"></script>
+<script src="../script/javascript.js"></script>
 </body>
 </html>

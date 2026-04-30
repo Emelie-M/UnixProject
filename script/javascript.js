@@ -1,118 +1,159 @@
+const songs = [
+  { name: "Symbolism", artist: "Electro-Light", file: "../music/Electro-Light - Symbolism [NCS Release].mp3" },
+  { name: "Song 2", artist: "Tame Impala", file: "music/song2.mp3" },
+  { name: "Song 3", artist: "Tame Impala", file: "music/song3.mp3" }
+];
+
+let playlist = [];
+let currentIndex = 0;
+
+// Elements
+const songList = document.getElementById("songList");
+const playlistUI = document.getElementById("playlist");
 const audio = document.getElementById("audio");
 const playBtn = document.getElementById("play");
-const nextBtn = document.getElementById("next");
-const prevBtn = document.getElementById("prev");
-const progress = document.getElementById("progress");
+const playHero = document.getElementById("playHero");
 
-const playlistEl = document.getElementById("playlist");
-const addBtn = document.getElementById("add");
-const songInput = document.getElementById("songInput");
+const vinyl = document.getElementById("vinyl");
+const artistEl = document.getElementById("artist");
+const trackList = document.getElementById("trackList");
 
 const title = document.getElementById("title");
 const currentTitle = document.getElementById("currentTitle");
+
+const progress = document.getElementById("progress");
 const currentTimeEl = document.getElementById("currentTime");
 const durationEl = document.getElementById("duration");
 
-let songs = [];
-let currentIndex = -1;
 
-/* FORMAT TIME */
-function formatTime(time) {
-  if (!time) return "0:00";
-  const minutes = Math.floor(time / 60);
-  const seconds = Math.floor(time % 60).toString().padStart(2, "0");
-  return `${minutes}:${seconds}`;
-}
+// LOAD SONGS
+songs.forEach((song, i) => {
+  const div = document.createElement("div");
+  div.classList.add("card");
 
-/* LOAD SONG */
-function loadSong(index) {
-  if (index < 0 || index >= songs.length) return;
+  div.innerHTML = `
+    <p>${song.name}</p>
+    <button onclick="addToPlaylist(${i})">Add</button>
+  `;
 
-  currentIndex = index;
-  audio.src = songs[index];
-  audio.play();
+  songList.appendChild(div);
+});
 
-  playBtn.textContent = "⏸";
-
-  title.textContent = "Song " + (index + 1);
-  currentTitle.textContent = "Song " + (index + 1);
-
+function addToPlaylist(i) {
+  playlist.push(songs[i]);
   renderPlaylist();
 }
 
-/* PLAY / PAUSE */
-playBtn.onclick = () => {
-  if (audio.paused) {
-    audio.play();
-    playBtn.textContent = "⏸";
-  } else {
-    audio.pause();
-    playBtn.textContent = "▶️";
-  }
-};
-
-/* NEXT / PREV */
-nextBtn.onclick = () => loadSong(currentIndex + 1);
-prevBtn.onclick = () => loadSong(currentIndex - 1);
-
-/* ADD SONG */
-addBtn.onclick = () => {
-  const url = songInput.value.trim();
-  if (!url) return;
-
-  songs.push(url);
-  songInput.value = "";
-  renderPlaylist();
-};
-
-/* REMOVE SONG */
-function removeSong(index) {
-  songs.splice(index, 1);
-
-  if (index === currentIndex) {
-    audio.pause();
-    currentIndex = -1;
-    currentTitle.textContent = "No song";
-  }
-
+function removeFromPlaylist(i) {
+  playlist.splice(i, 1);
   renderPlaylist();
 }
 
-/* RENDER PLAYLIST */
 function renderPlaylist() {
-  playlistEl.innerHTML = "";
+  playlistUI.innerHTML = "";
 
-  songs.forEach((song, index) => {
+  playlist.forEach((song, i) => {
     const li = document.createElement("li");
 
-    if (index === currentIndex) li.classList.add("active");
-
     li.innerHTML = `
-      <span onclick="loadSong(${index})">Song ${index + 1}</span>
-      <button onclick="removeSong(${index})">✕</button>
+      ${song.name}
+      <button onclick="playSong(${i})">▶</button>
+      <button onclick="removeFromPlaylist(${i})">❌</button>
     `;
 
-    playlistEl.appendChild(li);
+    playlistUI.appendChild(li);
   });
 }
 
-/* UPDATE PROGRESS */
-audio.addEventListener("timeupdate", () => {
-  progress.max = audio.duration || 0;
-  progress.value = audio.currentTime;
 
-  currentTimeEl.textContent = formatTime(audio.currentTime);
-  durationEl.textContent = formatTime(audio.duration);
-});
+// TRACK LIST
+function renderTracks() {
+  trackList.innerHTML = "";
 
-/* SEEK */
-progress.addEventListener("input", () => {
-  audio.currentTime = progress.value;
-});
+  songs.forEach((song, i) => {
+    const div = document.createElement("div");
+    div.classList.add("track");
 
-/* AUTO NEXT */
-audio.addEventListener("ended", () => {
-  if (currentIndex < songs.length - 1) {
-    loadSong(currentIndex + 1);
+    div.innerHTML = `
+      <span>${song.name}</span>
+      <span>▶</span>
+    `;
+
+    div.onclick = () => {
+      addToPlaylist(i);
+      playSong(playlist.length - 1);
+    };
+
+    trackList.appendChild(div);
+  });
+}
+renderTracks();
+
+
+// PLAY SONG
+function playSong(i) {
+  if (!playlist[i]) return;
+
+  currentIndex = i;
+  const song = playlist[i];
+
+  audio.src = song.file;
+  audio.play();
+
+  title.textContent = song.name;
+  currentTitle.textContent = song.name;
+  artistEl.textContent = song.artist;
+
+  playBtn.textContent = "⏸";
+  vinyl.style.animationPlayState = "running";
+}
+
+
+// PLAY/PAUSE
+function togglePlay() {
+  if (!audio.src) return;
+
+  if (audio.paused) {
+    audio.play();
+    vinyl.style.animationPlayState = "running";
+    playBtn.textContent = "⏸";
+  } else {
+    audio.pause();
+    vinyl.style.animationPlayState = "paused";
+    playBtn.textContent = "▶️";
   }
+}
+
+playBtn.addEventListener("click", togglePlay);
+playHero.addEventListener("click", togglePlay);
+
+
+// NEXT / PREV
+document.getElementById("next").onclick = () => {
+  if (!playlist.length) return;
+  currentIndex = (currentIndex + 1) % playlist.length;
+  playSong(currentIndex);
+};
+
+document.getElementById("prev").onclick = () => {
+  if (!playlist.length) return;
+  currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+  playSong(currentIndex);
+};
+
+
+// PROGRESS
+audio.addEventListener("timeupdate", () => {
+  progress.value = (audio.currentTime / audio.duration) * 100 || 0;
+});
+
+progress.addEventListener("input", () => {
+  audio.currentTime = (progress.value / 100) * audio.duration;
+});
+
+
+// END
+audio.addEventListener("ended", () => {
+  vinyl.style.animationPlayState = "paused";
+  document.getElementById("next").click();
 });
