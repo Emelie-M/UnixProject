@@ -1,0 +1,187 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0f1a;
+  color: white;
+}
+
+/* Layout */
+.container {
+  display: flex;
+  height: calc(100vh - 80px);
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background: #070b14;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  margin-bottom: 15px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.sidebar li {
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.sidebar li:hover {
+  background: #1a1f2e;
+}
+
+.sidebar li.active {
+  background: #00c6ff;
+  color: black;
+}
+
+.sidebar input {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+}
+
+.sidebar button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  background: #00c6ff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+/* Main */
+.main {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Hero */
+.hero {
+  height: 220px;
+  border-radius: 20px;
+  padding: 30px;
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  display: flex;
+  align-items: center;
+}
+
+.hero h1 {
+  font-size: 32px;
+}
+
+.hero button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  background: white;
+  cursor: pointer;
+}
+
+/* Rows */
+.row {
+  display: flex;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.card {
+  width: 120px;
+  height: 120px;
+  background: #1a1f2e;
+  border-radius: 10px;
+}
+
+.artist {
+  width: 80px;
+  height: 80px;
+  background: #1a1f2e;
+  border-radius: 50%;
+}
+
+/* Bottom Player */
+.player {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 80px;
+  background: #05070d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.player button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+}
+
+#progress {
+  width: 40%;
+}
+
+/* Player layout */
+.player {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 90px;
+  background: #05070d;
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  align-items: center;
+  padding: 0 20px;
+}
+
+/* Track info */
+.track-info {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.controls button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#play {
+  font-size: 28px;
+}
+
+/* Progress section */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#progress {
+  flex: 1;
+}
