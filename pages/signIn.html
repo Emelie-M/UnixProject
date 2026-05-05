@@ -5,31 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Dot Music</title>
     <link rel="stylesheet" href="../css/login.css">
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - Dot Music</title>
-    <link rel="stylesheet" href="../css/login.css">
+    <script src="../script/auth.js" defer></script>
 </head>
-<body>
+    <body>
+        <div class="auth-container">
+            <h1>🎵 Dot Music</h1>
+            <h2>Create Account</h2>
 
-<div class="auth-container">
-    <h1>🎵 Dot Music</h1>
-    <h2>Create Account</h2>
+            <input type="text" id="signup-username" placeholder="Username">
+            <input type="password" id="signup-password" placeholder="Password">
 
-    <input type="text" id="signup-username" placeholder="Username">
-    <input type="password" id="signup-password" placeholder="Password">
+            <!-- ✅ Confirm Password Field -->
+            <input type="password" id="signup-confirm-password" placeholder="Confirm Password">
 
-    <!-- ✅ Confirm Password Field -->
-    <input type="password" id="signup-confirm-password" placeholder="Confirm Password">
+            
+            <button onclick="signUp()">Sign Up</button>
 
-    <button onclick="signup()">Sign Up</button>
-
-    <p>Already have an account? <a href="login.html">Login</a></p>
-</div>
-
-<script src="js/auth.js"></script>
-</body>
+            <p>Already have an account? <a href="login.html">Login</a></p>
+        </div>
+    </body>
 </html>
