@@ -1,7 +1,13 @@
 const songs = [
   { name: "Symbolism", artist: "Electro-Light", file: "../music/Electro-Light - Symbolism [NCS Release].mp3" },
-  { name: "Song 2", artist: "Tame Impala", file: "music/song2.mp3" },
-  { name: "Song 3", artist: "Tame Impala", file: "music/song3.mp3" }
+  { name: "On & On (feat. Daniel Levi)", artist: "Cartoon, Daniel Levi, Jéja", file: "../music/Cartoon, Daniel Levi, Jéja - On & On (feat. Daniel Levi) [NCS Release].mp3" },
+  { name: "Invincible", artist: "DEAF KEV", file: "../music/DEAF KEV - Invincible [NCS Release].mp3"},
+  { name: "Sky High", artist: "Elektronomia", file: "../music/Elektronomia - Sky High [NCS Release].mp3" },
+  { name: "Pill (feat. Emma Sameth)", artist: "Heuse, Zeus X Crona, Emma Sameth", file: "../music/Heuse, Zeus X Crona, Emma Sameth - Pill (feat. Emma Sameth) [NCS Release].mp3" },
+  { name: "Heroes Tonight (feat. Johnning)", artist: "Janji, Johnning", file: "../music/Janji, Johnning - Heroes Tonight (feat. Johnning) [NCS Release].mp3" },
+  { name: "No More Levitation", artist: "Rex Hooligan, Anna Simone", file: "../music/" },
+  { name: "Shine", artist: "Spektrem", file: "../music/Spektrem - Shine [NCS Release].mp3" },
+  { name: "Feel Good", artist: "Syn Cole", file: "../music/Syn Cole - Feel Good [NCS Release].mp3" }
 ];
 
 let playlist = [];
@@ -25,6 +31,53 @@ const progress = document.getElementById("progress");
 const currentTimeEl = document.getElementById("currentTime");
 const durationEl = document.getElementById("duration");
 
+
+function formatTime(time) {
+  if (isNaN(time)) return "0:00";
+
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60)
+    .toString()
+    .padStart(2, "0");
+
+  return `${minutes}:${seconds}`;
+}
+
+audio.addEventListener("timeupdate", () => {
+  // progress bar
+  progress.value = (audio.currentTime / audio.duration) * 100 || 0;
+
+  // 👇 update time text
+  currentTimeEl.textContent = formatTime(audio.currentTime);
+  durationEl.textContent = formatTime(audio.duration);
+});
+
+let visualProgress = 0;
+
+function updateProgress() {
+  if (audio.duration) {
+    const target = (audio.currentTime / audio.duration) * 100;
+
+    // 👇 smoothing (0.1 = slower, 0.2 = faster)
+    visualProgress += (target - visualProgress) * 0.1;
+
+    progress.value = visualProgress;
+    progress.style.setProperty("--progress", visualProgress + "%");
+
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+  }
+
+  requestAnimationFrame(updateProgress);
+}
+
+updateProgress();
+
+// start loop
+updateProgress();
+
+audio.addEventListener("loadedmetadata", () => {
+  durationEl.textContent = formatTime(audio.duration);
+});
 
 // LOAD SONGS
 songs.forEach((song, i) => {
@@ -120,7 +173,7 @@ function togglePlay() {
   } else {
     audio.pause();
     vinyl.style.animationPlayState = "paused";
-    playBtn.textContent = "▶️";
+    playBtn.textContent = "▶";
   }
 }
 
@@ -157,3 +210,4 @@ audio.addEventListener("ended", () => {
   vinyl.style.animationPlayState = "paused";
   document.getElementById("next").click();
 });
+

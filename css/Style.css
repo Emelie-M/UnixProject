@@ -2,7 +2,7 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
   background-image: url("../images/polka.png");
-  color: rgb(160, 0, 0);
+  color: rgb(121, 40, 80);
 }
 
 .container {
@@ -29,7 +29,7 @@ body {
 }
 
 .sidebar li:hover {
-  background: #141a2a;
+  background: #f0719b;
 }
 
 /* MAIN */
@@ -154,11 +154,26 @@ body {
 }
 
 /* TRACK LIST */
-.track-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+#trackList {
+  max-height: 13.2em;   
+  overflow-y: auto;    
+  padding-right: 2em;  
 }
+
+#trackList::-webkit-scrollbar {
+  width: 2em;
+}
+
+#trackList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#trackList::-webkit-scrollbar-thumb {
+  background: #fb6f92;
+  border-radius: 10px;
+}
+
+
 
 .track {
   display: flex;
@@ -177,17 +192,46 @@ body {
   display: flex;
   gap: 15px;
   margin-top: 20px;
+  max-width: 72em;  
+
+  overflow-x: auto;   
+ 
+
+  scroll-behavior: smooth; 
+}
+
+.row::-webkit-scrollbar {
+  height: 8px;
+}
+
+.row::-webkit-scrollbar-thumb {
+  background: #fb6f92;
+  border-radius: 10px;
+}
+
+.row {
+  scroll-snap-type: x mandatory;
+}
+
+.card {
+  scroll-snap-align: start;
 }
 
 .card {
   width: 130px;
   height: 130px;
-  background: #141a2a;
+
+  flex: 0 0 auto;   
+
+  background: #802342;
   border-radius: 10px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  color: #fdbacb;
 }
 
 /* PLAYER */
@@ -196,11 +240,12 @@ body {
   bottom: 0;
   width: 100%;
   height: 90px;
-  background: #05070d;
+  background: #802342;
   display: grid;
   grid-template-columns: 1fr 1fr 2fr;
   align-items: center;
   padding: 0 20px;
+  color: #ffb3c6;
 }
 
 .controls {
@@ -215,14 +260,67 @@ body {
   color: white;
   font-size: 22px;
   cursor: pointer;
+   position: relative;
+  left: -5em;
 }
 
 .progress-container {
   display: flex;
   align-items: center;
+  position: relative;
+  left: -10em;
   gap: 10px;
 }
 
 #progress {
   flex: 1;
+}
+
+#progress {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 10px;
+  background: #ffd6e0; /* light track */
+  outline: none;
+  cursor: pointer;
+}
+
+#progress {
+  background: linear-gradient(
+    to right,
+    #fb6f92 0%,
+    #fb6f92 var(--progress),
+    #ffd6e0 var(--progress),
+    #ffd6e0 100%
+  );
+}
+
+/* Chrome / Edge / Safari */
+#progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background: #fb6f92;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+/* Firefox */
+#progress::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: #fb6f92;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+#progress:hover::-webkit-slider-thumb {
+  transform: scale(1.2);
+}
+
+#progress {
+  height: 10px;
 }
