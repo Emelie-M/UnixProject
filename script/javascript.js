@@ -1,13 +1,13 @@
 const songs = [
-  { name: "Symbolism", artist: "Electro-Light", file: "../music/Electro-Light - Symbolism [NCS Release].mp3" },
-  { name: "On & On (feat. Daniel Levi)", artist: "Cartoon, Daniel Levi, Jéja", file: "../music/Cartoon, Daniel Levi, Jéja - On & On (feat. Daniel Levi) [NCS Release].mp3" },
-  { name: "Invincible", artist: "DEAF KEV", file: "../music/DEAF KEV - Invincible [NCS Release].mp3"},
-  { name: "Sky High", artist: "Elektronomia", file: "../music/Elektronomia - Sky High [NCS Release].mp3" },
-  { name: "Pill (feat. Emma Sameth)", artist: "Heuse, Zeus X Crona, Emma Sameth", file: "../music/Heuse, Zeus X Crona, Emma Sameth - Pill (feat. Emma Sameth) [NCS Release].mp3" },
-  { name: "Heroes Tonight (feat. Johnning)", artist: "Janji, Johnning", file: "../music/Janji, Johnning - Heroes Tonight (feat. Johnning) [NCS Release].mp3" },
-  { name: "No More Levitation", artist: "Rex Hooligan, Anna Simone", file: "../music/" },
-  { name: "Shine", artist: "Spektrem", file: "../music/Spektrem - Shine [NCS Release].mp3" },
-  { name: "Feel Good", artist: "Syn Cole", file: "../music/Syn Cole - Feel Good [NCS Release].mp3" }
+  { musicId: 1, name: "Symbolism", artist: "Electro-Light", file: "../music/Electro-Light - Symbolism [NCS Release].mp3" },
+  { musicId: 2, name: "On & On (feat. Daniel Levi)", artist: "Cartoon, Daniel Levi, Jéja", file: "../music/Cartoon, Daniel Levi, Jéja - On & On (feat. Daniel Levi) [NCS Release].mp3" },
+  { musicId: 3, name: "Invincible", artist: "DEAF KEV", file: "../music/DEAF KEV - Invincible [NCS Release].mp3" },
+  { musicId: 4, name: "Sky High", artist: "Elektronomia", file: "../music/Elektronomia - Sky High [NCS Release].mp3" },
+  { musicId: 5, name: "Pill (feat. Emma Sameth)", artist: "Heuse, Zeus X Crona, Emma Sameth", file: "../music/Heuse, Zeus X Crona, Emma Sameth - Pill (feat. Emma Sameth) [NCS Release].mp3" },
+  { musicId: 6, name: "Heroes Tonight (feat. Johnning)", artist: "Janji, Johnning", file: "../music/Janji, Johnning - Heroes Tonight (feat. Johnning) [NCS Release].mp3" },
+  { musicId: 7, name: "No More Levitation", artist: "Rex Hooligan, Anna Simone", file: "../music/" },
+  { musicId: 8, name: "Shine", artist: "Spektrem", file: "../music/Spektrem - Shine [NCS Release].mp3" },
+  { musicId: 9, name: "Feel Good", artist: "Syn Cole", file: "../music/Syn Cole - Feel Good [NCS Release].mp3" }
 ];
 
 let playlist = [];
@@ -44,10 +44,7 @@ function formatTime(time) {
 }
 
 audio.addEventListener("timeupdate", () => {
-  // progress bar
   progress.value = (audio.currentTime / audio.duration) * 100 || 0;
-
-  // 👇 update time text
   currentTimeEl.textContent = formatTime(audio.currentTime);
   durationEl.textContent = formatTime(audio.duration);
 });
@@ -57,29 +54,22 @@ let visualProgress = 0;
 function updateProgress() {
   if (audio.duration) {
     const target = (audio.currentTime / audio.duration) * 100;
-
-    // 👇 smoothing (0.1 = slower, 0.2 = faster)
     visualProgress += (target - visualProgress) * 0.1;
-
     progress.value = visualProgress;
     progress.style.setProperty("--progress", visualProgress + "%");
-
     currentTimeEl.textContent = formatTime(audio.currentTime);
   }
-
   requestAnimationFrame(updateProgress);
 }
 
-updateProgress();
-
-// start loop
 updateProgress();
 
 audio.addEventListener("loadedmetadata", () => {
   durationEl.textContent = formatTime(audio.duration);
 });
 
-// LOAD SONGS
+
+// LOAD SONGS INTO SONG LIST
 songs.forEach((song, i) => {
   const div = document.createElement("div");
   div.classList.add("card");
@@ -92,16 +82,22 @@ songs.forEach((song, i) => {
   songList.appendChild(div);
 });
 
+
+// ADD TO PLAYLIST
 function addToPlaylist(i) {
   playlist.push(songs[i]);
   renderPlaylist();
+  savePlaylist();
 }
 
+// REMOVE FROM PLAYLIST
 function removeFromPlaylist(i) {
   playlist.splice(i, 1);
   renderPlaylist();
+  savePlaylist();
 }
 
+// RENDER PLAYLIST
 function renderPlaylist() {
   playlistUI.innerHTML = "";
 
@@ -195,7 +191,7 @@ document.getElementById("prev").onclick = () => {
 };
 
 
-// PROGRESS
+// PROGRESS BAR
 audio.addEventListener("timeupdate", () => {
   progress.value = (audio.currentTime / audio.duration) * 100 || 0;
 });
@@ -205,9 +201,48 @@ progress.addEventListener("input", () => {
 });
 
 
-// END
+// END OF SONG
 audio.addEventListener("ended", () => {
   vinyl.style.animationPlayState = "paused";
   document.getElementById("next").click();
 });
 
+
+// SAVE PLAYLIST TO DATABASE
+async function savePlaylist() {
+  await fetch("../PHP/save.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      musicIds: playlist.map(s => ({ musicId: s.musicId, name: s.name }))
+    })
+  });
+}
+
+
+// LOAD PLAYLIST FROM DATABASE
+async function loadPlaylist() {
+  try {
+    const res = await fetch("../PHP/get.php");
+    const data = await res.json();
+
+    if (data.success && data.playlist.length > 0) {
+      playlist = data.playlist.map(s => {
+        const match = songs.find(song => song.musicId === s.musicId);
+        return {
+          musicId: s.musicId,
+          name: s.name,
+          artist: s.artist,
+          file: match ? match.file : ""
+        };
+      });
+
+      renderPlaylist();
+    }
+  } catch (err) {
+    console.error("Could not load playlist:", err);
+  }
+}
+
+// Load playlist when page opens
+loadPlaylist();
